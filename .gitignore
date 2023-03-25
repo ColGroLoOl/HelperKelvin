@@ -1,4 +1,5 @@
+/.idea
+/log
 /database/database.db
-/log/
 /config.json
 /test.py

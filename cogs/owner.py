@@ -169,7 +169,7 @@ class Owner(commands.Cog, name="owner"):
             user = self.bot.get_user(int(wlUser[0])) or await self.bot.fetch_user(
                 int(wlUser[0])
             )
-            users.append(f"• {user.mention} ({user}) - whitelisted <t:{user[1]}>")
+            users.append(f"• {user.mention} ({user}) - whitelisted on <t:{wlUser[1]}>")
 
         embed.description = "\n".join(users)
 
