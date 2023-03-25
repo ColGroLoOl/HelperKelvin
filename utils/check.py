@@ -11,6 +11,7 @@ T = TypeVar("T")
 def owner() -> Callable[[T], T]:
     """
     This is a custom check to see if the user executing the command is an owner of the bot.
+    :return:
     """
 
     async def predicate(context: commands.Context) -> bool:
@@ -28,7 +29,9 @@ def owner() -> Callable[[T], T]:
 def whitelisted() -> Callable[[T], T]:
     """
     Custom check to see if a user pays me :evil:
+    :return:
     """
+
     async def predicate(context: commands.Context) -> bool:
         if await db_manager.is_whitelisted(context.author.id) or owner():
             return True
@@ -41,6 +44,7 @@ def whitelisted() -> Callable[[T], T]:
 def not_blacklisted() -> Callable[[T], T]:
     """
     Custom check to see if a user is blacklisted.
+    :return:
     """
 
     async def predicate(context: commands.Context) -> bool:

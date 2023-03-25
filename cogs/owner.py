@@ -18,15 +18,15 @@ class Owner(commands.Cog, name="owner"):
     @check.owner()
     async def blacklist(self, context: Context) -> None:
         """
-        Lets you add or remove a user from not being able to use the bot.
+            Lets you add or remove a user from not being able to use the bot.
+
         :param context: The hybrid command context.
         """
         if context.invoked_subcommand is None:
             embed = discord.Embed(
-                description="You need to specify a subcommand.\n\n**Subcommands:**\n"
-                            "`add` - Add a user to the blacklist.\n`remove` - Remove a user from the blacklist.",
-                color=0xE02B2B,
-            )
+                description="You need to specify a subcommand.\n\n**Subcommands:**\n`add` - Add a user to the "
+                            "blacklist.\n`remove` - Remove a user from the blacklist.", color=0xE02B2B)
+
             await context.send(embed=embed)
 
     @blacklist.command(
@@ -37,7 +37,8 @@ class Owner(commands.Cog, name="owner"):
     @check.owner()
     async def blacklist_show(self, context: Context) -> None:
         """
-        Shows the list of all blacklisted users.
+            Shows the list of all blacklisted users.
+
         :param context: The hybrid command context.
         """
         blacklisted_users = await db_manager.get_blacklisted_users()
@@ -50,11 +51,11 @@ class Owner(commands.Cog, name="owner"):
 
         embed = discord.Embed(title="Blacklisted Users", color=0x9C84EF)
         users = []
-        for bluser in blacklisted_users:
-            user = self.bot.get_user(int(bluser[0])) or await self.bot.fetch_user(
-                int(bluser[0])
+        for blUser in blacklisted_users:
+            user = self.bot.get_user(int(blUser[0])) or await self.bot.fetch_user(
+                int(blUser[0])
             )
-            users.append(f"• {user.mention} ({user}) - Blacklisted <t:{bluser[1]}>")
+            users.append(f"• {user.mention} ({user}) - Blacklisted <t:{blUser[1]}>")
         embed.description = "\n".join(users)
         await context.send(embed=embed)
 
@@ -67,26 +68,25 @@ class Owner(commands.Cog, name="owner"):
     @check.owner()
     async def blacklist_add(self, context: Context, user: discord.User) -> None:
         """
-        Lets you add a user from not being able to use the bot.
+            Lets you add a user from not being able to use the bot.
+
         :param context: The hybrid command context.
         :param user: The user that should be added to the blacklist.
         """
         user_id = user.id
+
         if await db_manager.is_blacklisted(user_id):
-            embed = discord.Embed(
-                description=f"**{user.name}** is already in the blacklist.",
-                color=0xE02B2B,
-            )
+            embed = discord.Embed(description=f"**{user.name}** is already in the blacklist.", color=0xE02B2B)
+
             await context.send(embed=embed)
             return
         total = await db_manager.add_user_to_blacklist(user_id)
-        embed = discord.Embed(
-            description=f"**{user.name}** has been successfully added to the blacklist",
-            color=0x9C84EF,
-        )
-        embed.set_footer(
-            text=f"There {'is' if total == 1 else 'are'} now {total} {'user' if total == 1 else 'users'} in the blacklist"
-        )
+
+        embed = discord.Embed(description=f"**{user.name}** has been successfully added to the blacklist",
+                              color=0x9C84EF)
+        embed.set_footer(text=f"There {'is' if total == 1 else 'are'} now {total} {'user' if total == 1 else 'users'} "
+                              "in the blacklist")
+
         await context.send(embed=embed)
 
     @blacklist.command(
@@ -98,26 +98,31 @@ class Owner(commands.Cog, name="owner"):
     @check.owner()
     async def blacklist_remove(self, context: Context, user: discord.User) -> None:
         """
-        Lets you remove a user from not being able to use the bot.
+            Removes a user from the blacklist
+            
+        :param context: The hybrid command context.
+        :param user: The user that should be removed from the blacklist.
+        :return:
         """
         user_id = user.id
+
         if not await db_manager.is_blacklisted(user_id):
-            embed = discord.Embed(
-                description=f"**{user.name}** is not in the blacklist.", color=0xE02B2B
-            )
+            embed = discord.Embed(description=f"**{user.name}** is not in the blacklist.", color=0xE02B2B)
+
             await context.send(embed=embed)
             return
+
         total = await db_manager.remove_user_from_blacklist(user_id)
-        embed = discord.Embed(
-            description=f"**{user.name}** has been successfully removed from the blacklist",
-            color=0x9C84EF,
-        )
-        embed.set_footer(
-            text=f"There {'is' if total == 1 else 'are'} now {total} {'user' if total == 1 else 'users'} in the blacklist"
-        )
+
+        embed = discord.Embed( description=f"**{user.name}** has been successfully removed from the blacklist",
+                               color=0x9C84EF)
+
+        embed.set_footer(text=f"There {'is' if total == 1 else 'are'} now {total} {'user' if total == 1 else 'users'} "
+                              "in the blacklist")
+
         await context.send(embed=embed)
 
-    # whitelist
+    # whitelist stuff
     @commands.hybrid_group(
         name="whitelist",
         description="[owner] Get the list of all whitelisted users.",
@@ -125,14 +130,16 @@ class Owner(commands.Cog, name="owner"):
     @check.owner()
     async def whitelist(self, context: Context) -> None:
         """
-        Lets you add or remove a user from not being able to use the bot.
+            Lets you add or remove a user from not being able to use the bot.
+
+        :param context: The hybrid command context.
+        :return:
         """
         if context.invoked_subcommand is None:
             embed = discord.Embed(
-                description="You need to specify a subcommand.\n\n**Subcommands:**\n"
-                            "`add` - Add a user to the Whitelist.\n`remove` - Remove a user from the Whitelist.",
-                color=0xE02B2B,
-            )
+                description="You need to specify a subcommand.\n\n**Subcommands:**\n`add` - Add a user to the "
+                            "Whitelist.\n`remove` - Remove a user from the Whitelist.", color=0xE02B2B)
+
             await context.send(embed=embed)
 
     @whitelist.command(
@@ -143,25 +150,29 @@ class Owner(commands.Cog, name="owner"):
     @check.owner()
     async def whitelist_show(self, context: Context) -> None:
         """
-        Shows the list of all whitelisted users.
+            Shows the list of all whitelisted users.
+
         :param context: The hybrid command context.
         """
+
         whitelisted_users = await db_manager.get_whitelisted_users()
+
         if len(whitelisted_users) == 0:
-            embed = discord.Embed(
-                description="There are currently no whitelisted users.", color=0xE02B2B
-            )
+            embed = discord.Embed(description="There are currently no whitelisted users.", color=0xE02B2B)
             await context.send(embed=embed)
             return
 
         embed = discord.Embed(title="Whitelisted Users", color=0x9C84EF)
         users = []
-        for bluser in whitelisted_users:
-            user = self.bot.get_user(int(bluser[0])) or await self.bot.fetch_user(
-                int(bluser[0])
+
+        for wlUser in whitelisted_users:
+            user = self.bot.get_user(int(wlUser[0])) or await self.bot.fetch_user(
+                int(wlUser[0])
             )
-            users.append(f"• {user.mention} ({user}) - whitelisted <t:{bluser[1]}>")
+            users.append(f"• {user.mention} ({user}) - whitelisted <t:{user[1]}>")
+
         embed.description = "\n".join(users)
+
         await context.send(embed=embed)
 
     @whitelist.command(
@@ -173,26 +184,26 @@ class Owner(commands.Cog, name="owner"):
     @check.owner()
     async def whitelist_add(self, context: Context, user: discord.User) -> None:
         """
-        Lets you add a user from not being able to use the bot.
+            Lets you add a user from not being able to use the bot.
+
         :param context: The hybrid command context.
         :param user: The user that should be added to the Whitelist.
         """
         user_id = user.id
+
         if await db_manager.is_whitelisted(user_id):
-            embed = discord.Embed(
-                description=f"**{user.name}** is already in the Whitelist.",
-                color=0xE02B2B,
-            )
+            embed = discord.Embed(description=f"**{user.name}** is already in the Whitelist.", color=0xE02B2B)
             await context.send(embed=embed)
             return
+
         total = await db_manager.add_user_to_whitelist(user_id)
-        embed = discord.Embed(
-            description=f"**{user.name}** has been successfully added to the Whitelist",
-            color=0x9C84EF,
-        )
-        embed.set_footer(
-            text=f"There {'is' if total == 1 else 'are'} now {total} {'user' if total == 1 else 'users'} in the Whitelist"
-        )
+
+        embed = discord.Embed(description=f"**{user.name}** has been successfully added to the Whitelist",
+                              color=0x9C84EF)
+
+        embed.set_footer(text=f"There {'is' if total == 1 else 'are'} now {total} {'user' if total == 1 else 'users'} "
+                              "in the Whitelist")
+
         await context.send(embed=embed)
 
     @whitelist.command(
@@ -204,24 +215,26 @@ class Owner(commands.Cog, name="owner"):
     @check.owner()
     async def whitelist_remove(self, context: Context, user: discord.User) -> None:
         """
-        Lets you remove a user from not being able to use the bot.
+            Lets you remove a user from not being able to use the bot.
+
+        :param context: The hybrid command context.
+        :param user: The user that should be removed from the blacklist.
+        :return:
         """
         user_id = user.id
+
         if not await db_manager.is_whitelisted(user_id):
-            embed = discord.Embed(
-                description=f"**{user.name}** is not in the Whitelist.", color=0xE02B2B
-            )
+            embed = discord.Embed(description=f"**{user.name}** is not in the Whitelist.", color=0xE02B2B)
             await context.send(embed=embed)
             return
+
         total = await db_manager.remove_user_from_whitelist(user_id)
-        embed = discord.Embed(
-            description=f"**{user.name}** has been successfully removed from the Whitelist",
-            color=0x9C84EF,
-        )
-        embed.set_footer(
-            text=f"There {'is' if total == 1 else 'are'} now {total} {'user' if total == 1 else 'users'} in the "
-                 f"whitelist"
-        )
+
+        embed = discord.Embed(description=f"**{user.name}** has been successfully removed from the Whitelist",
+                              color=0x9C84EF)
+        embed.set_footer(text=f"There {'is' if total == 1 else 'are'} now {total} {'user' if total == 1 else 'users'} "
+                              "in the whitelist")
+
         await context.send(embed=embed)
 
 

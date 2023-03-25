@@ -14,12 +14,15 @@ class General(commands.Cog, name="general"):
 
     @commands.hybrid_command(
         name="botinfo",
-        description="Get some useful (or not) information about the bot.",
+        description="Get some information about the bot.",
     )
     @check.not_blacklisted()
     async def botinfo(self, context: Context) -> None:
         """
-        Get some useful (or not) information about the bot.
+            Get some information about the bot
+
+        :param context: The hybrid command context.
+        :return:
         """
         embed = discord.Embed(
             color=0x9C84EF,
@@ -44,7 +47,10 @@ class General(commands.Cog, name="general"):
     @check.not_blacklisted()
     async def ping(self, context: Context) -> None:
         """
-        Check if the bot is alive.
+            Check if the bot is alive
+
+        :param context: The hybrid command context.
+        :return:
         """
         embed = discord.Embed(
             title="Pong!",
@@ -60,27 +66,26 @@ class General(commands.Cog, name="general"):
     @check.not_blacklisted()
     async def bitcoin(self, context: Context) -> None:
         """
-        Get the current price of bitcoin.
+            Get the current price of bitcoin
+
+        :param context: The hybrid command context.
+        :return:
         """
         async with aiohttp.ClientSession() as session:
             async with session.get(
                     "https://api.coindesk.com/v1/bpi/currentprice/BTC.json"
             ) as request:
+
                 if request.status == 200:
                     data = await request.json(
                         content_type="application/javascript"
-                    )  # For some reason the returned content is of type JavaScript
-                    embed = discord.Embed(
-                        title="Bitcoin price",
-                        description=f"The current price is {data['bpi']['USD']['rate']} :dollar:",
-                        color=0x9C84EF,
                     )
+                    embed = discord.Embed(title="Bitcoin price", color=0x9C84EF,
+                                          description=f"The current price is {data['bpi']['USD']['rate']} :dollar:")
                 else:
-                    embed = discord.Embed(
-                        title="Error!",
-                        description="There is something wrong with the API, please try again later",
-                        color=0xE02B2B,
-                    )
+                    embed = discord.Embed(title="Error!", color=0xE02B2B,
+                                          description="There is something wrong with the API, please try again later")
+
                 await context.send(embed=embed)
 
 

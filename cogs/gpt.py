@@ -19,9 +19,15 @@ class GPT(commands.Cog, name="gpt"):
     @check.not_blacklisted()
     @check.whitelisted()
     async def gpt(self, context: Context, prompt: str) -> None:
-        embed = discord.Embed(
-            description=f"*Generating response...*", color=0x9C84EF,
-        )
+        """
+            Generate a response using gpt based on given prompt
+
+        :param context: The hybrid command context.
+        :param prompt: Prompt used to generate.
+        :return:
+        """
+
+        embed = discord.Embed(description=f"*Generating response...*", color=0x9C84EF,)
         embed.set_author(name=f"\"{prompt}\"")
         embed.set_footer(text=f"Requested by {context.author.name}#{context.author.discriminator}")
 
@@ -46,15 +52,17 @@ class GPT(commands.Cog, name="gpt"):
     @check.whitelisted()
     async def getgpt(self, context: Context) -> None:
         """
-        Dump the history into json and load it into a message
+            Dump the history into json and load it into a message
+
+        :param context: The hybrid command context.
+        :return:
         """
         msg = "Chat History:\n```"
         r = json.loads(json.dumps(self.bot.chat.conversation))
-        for i in r["default"]:
-            # if i["role"] == "system":
-            #    continue
 
+        for i in r["default"]:
             msg += f"{i['role'].title()}: {i['content']}\n"
+
         await context.send(msg + "```")
 
     @commands.hybrid_command(
@@ -74,6 +82,12 @@ class GPT(commands.Cog, name="gpt"):
         app_commands.Choice(name="Developer Mode v2", value="dev")
     ])
     async def switchPersona(self, context: Context, persona: app_commands.Choice[str]):
+        """
+
+        :param context: The hybrid command context.
+        :param persona: The persona to switch to.
+        :return:
+        """
         if str(persona.value) == self.bot.chat.persona:
             await context.send(f"Already set to \"{persona.name}\" persona.")
             return

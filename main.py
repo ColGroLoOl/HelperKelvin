@@ -71,13 +71,17 @@ async def on_ready() -> None:
 @bot.event
 async def on_command_completion(context: Context) -> None:
     """
-    Triggered everytime a command is triggered (with success)
+        Triggered everytime a command is triggered (with success)
+
+    :param context:
+    :return:
     """
     exCommand = str(context.command.qualified_name.split(" ")[0])
 
     if context.guild:
         bot.log.info(
-            f"Executed \"{exCommand}\" command in {context.guild.name}  (ID: {context.guild.id}) by {context.author} (ID: {context.author.id})")
+            f"Executed \"{exCommand}\" command in {context.guild.name}  (ID: {context.guild.id}) by {context.author} "
+            f"(ID: {context.author.id})")
     else:
         bot.log.info(f"Executed \"{exCommand}\" command in DM by {context.author} (ID: {context.author.id})")
 
