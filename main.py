@@ -1,5 +1,6 @@
 # internal
 import asyncio
+import datetime
 import json
 import os
 import platform
@@ -35,6 +36,8 @@ bot = DiscordBot(
 )
 
 # Prepare some stuff
+bot.boottime = datetime.datetime.now()
+
 log = kelvinlog.getLogger("HelperKelvin")
 log.setProcess("preInit")
 
@@ -65,7 +68,8 @@ async def on_ready() -> None:
         await bot.tree.sync()
 
     bot.log.setProcess("main")
-    bot.log.info("Done")
+    bot.uptime = datetime.datetime.now()
+    bot.log.info(f"Finished after {bot.uptime - bot.boottime}")
 
 
 @bot.event
@@ -138,6 +142,8 @@ async def on_command_error(context: Context, error) -> None:
                 f"{context.author} (ID: {context.author.id})"
                 f" tried to execute an owner command in the bot's DMs, but the user is not the owner of the bot."
             )
+    else:
+        raise error
 
 
 @tasks.loop(minutes=1.0)

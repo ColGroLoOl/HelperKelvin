@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import discord
 from discord import app_commands
 from discord.ext import commands
@@ -10,7 +12,7 @@ class Owner(commands.Cog, name="owner"):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.hybrid_group(
+    @commands.hybrid_command(
         name="shutdown",
         description="Shutdown the bot"
     )
@@ -20,13 +22,13 @@ class Owner(commands.Cog, name="owner"):
         await context.send(embed=embed)
         await self.bot.close()
 
-    @commands.hybrid_group(
+    @commands.hybrid_command(
         name="load",
         description="Load a cog"
     )
     @app_commands.describe(cog="Cog to load")
     @check.owner()
-    async def loadCog(self, context: Context, cog: str):
+    async def load_cog(self, context: Context, cog: str):
         """
             Load a cog
 
@@ -47,13 +49,13 @@ class Owner(commands.Cog, name="owner"):
         embed = discord.Embed(description=f"Successfully loaded the `{cog}` cog.", color=0x9C84EF)
         await context.send(embed=embed)
 
-    @commands.hybrid_group(
+    @commands.hybrid_command(
         name="unload",
         description="Unload a cog"
     )
     @app_commands.describe(cog="Cog to unload")
     @check.owner()
-    async def unloadCog(self, context: Context, cog: str):
+    async def unload_cog(self, context: Context, cog: str):
         """
             Unload a cog
 
@@ -178,8 +180,8 @@ class Owner(commands.Cog, name="owner"):
 
         total = await db_manager.remove_user_from_blacklist(user_id)
 
-        embed = discord.Embed( description=f"**{user.name}** has been successfully removed from the blacklist",
-                               color=0x9C84EF)
+        embed = discord.Embed(description=f"**{user.name}** has been successfully removed from the blacklist",
+                              color=0x9C84EF)
 
         embed.set_footer(text=f"There {'is' if total == 1 else 'are'} now {total} {'user' if total == 1 else 'users'} "
                               "in the blacklist")
@@ -300,6 +302,22 @@ class Owner(commands.Cog, name="owner"):
                               "in the whitelist")
 
         await context.send(embed=embed)
+
+    @commands.hybrid_command(
+        name="uptime",
+        description="Show the bot uptime"
+    )
+    @check.owner()
+    async def show_uptime(self, context: Context) -> None:
+        """
+            Get the bot uptime
+
+        :param context:
+        :return:
+        """
+        uptime = datetime.now() - self.bot.uptime
+        print(uptime)
+        await context.send(f"Uptime: `{uptime}`")
 
 
 async def setup(bot):
