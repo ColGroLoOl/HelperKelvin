@@ -10,6 +10,70 @@ class Owner(commands.Cog, name="owner"):
     def __init__(self, bot):
         self.bot = bot
 
+    @commands.hybrid_group(
+        name="shutdown",
+        description="Shutdown the bot"
+    )
+    @check.owner()
+    async def shutdown(self, context: Context):
+        embed = discord.Embed(description="Shutting down. Bye! :wave:", color=0x9C84EF)
+        await context.send(embed=embed)
+        await self.bot.close()
+
+    @commands.hybrid_group(
+        name="load",
+        description="Load a cog"
+    )
+    @app_commands.describe(cog="Cog to load")
+    @check.owner()
+    async def loadCog(self, context: Context, cog: str):
+        """
+            Load a cog
+
+        :param context: The hybrid command context.
+        :param cog: The name of the cog to load
+        :return:
+        """
+        try:
+            await self.bot.load_extension(f"cogs.{cog}")
+
+        except Exception:
+            self.bot.log.error(f"Could not load the \"{cog}\" cog")
+            embed = discord.Embed(description=f"Could not load the \"{cog}\" cog", color=0xE02B2B)
+            await context.send(embed=embed)
+            return
+
+        self.bot.log.info(f"Loaded the \"{cog}\" cog.")
+        embed = discord.Embed(description=f"Successfully loaded the `{cog}` cog.", color=0x9C84EF)
+        await context.send(embed=embed)
+
+    @commands.hybrid_group(
+        name="unload",
+        description="Unload a cog"
+    )
+    @app_commands.describe(cog="Cog to unload")
+    @check.owner()
+    async def unloadCog(self, context: Context, cog: str):
+        """
+            Unload a cog
+
+        :param context: The hybrid command context.
+        :param cog: The name of the cog to unload
+        :return:
+        """
+        try:
+            await self.bot.unload_extension(f"cogs.{cog}")
+
+        except Exception:
+            self.bot.log.error(f"Could not unload the \"{cog}\" cog")
+            embed = discord.Embed(description=f"Could not unload the \"{cog}\" cog", color=0xE02B2B)
+            await context.send(embed=embed)
+            return
+
+        self.bot.log.info(f"Unloaded the \"{cog}\" cog.")
+        embed = discord.Embed(description=f"Successfully unloaded the `{cog}` cog.", color=0x9C84EF)
+        await context.send(embed=embed)
+
     # Blacklist stuff
     @commands.hybrid_group(
         name="blacklist",
