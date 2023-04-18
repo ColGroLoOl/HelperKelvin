@@ -19,13 +19,13 @@ from discord.ext.commands import Bot as DiscordBot, Context
 import kelvinlog
 import utils.exceptions
 
-path = os.path.realpath(os.path.dirname(__file__))
+path = os.getcwd()
 
 # check for config file
-if not os.path.isfile(f"{path}\\config.json"):
+if not os.path.isfile(f"{path}/config.json"):
     sys.exit("\"config.json\" not found")
 else:
-    with open(f"{path}\\config.json") as file:
+    with open(f"{path}/config.json") as file:
         config = json.load(file)
 
 # Register the bot as usual
@@ -36,12 +36,10 @@ bot = DiscordBot(
 )
 
 # Prepare some stuff
-bot.boottime = datetime.datetime.now()
+bot.bootTime = datetime.datetime.now()
 
-log = kelvinlog.getLogger("HelperKelvin")
-log.setProcess("preInit")
-
-bot.log = log
+bot.log = kelvinlog.getLogger("HelperKelvin")
+bot.log.setProcess("preInit")
 bot.config = config
 
 bot.chat = Chatbot(api_key=config["openai_token"])
@@ -49,14 +47,15 @@ bot.chat.persona = "standard"
 bot.chat.reset(system_prompt="You are a helpful assistant giving short and helpful answers")
 
 bot.log.info(
-    f"Running on {platform.system()} {platform.release()}, Python {platform.python_version()}, trying to Login")
+    f"Running on {platform.system()} {platform.release()}, Python {platform.python_version()}, trying to Login"
+)
 
 
 @bot.event
 async def on_ready() -> None:
     """
-    Code executed when the bot is ready, used to log basic information
-    and start presence cycle
+        Code executed when the bot is ready, used to log basic information
+        and start presence cycle
     """
     bot.log.setProcess("init")
     bot.log.info(f"Logged in as {bot.user.name}")
@@ -69,7 +68,7 @@ async def on_ready() -> None:
 
     bot.log.setProcess("main")
     bot.uptime = datetime.datetime.now()
-    bot.log.info(f"Finished after {bot.uptime - bot.boottime}")
+    bot.log.info(f"Finished after {bot.uptime - bot.bootTime}")
 
 
 @bot.event
@@ -93,7 +92,11 @@ async def on_command_completion(context: Context) -> None:
 @bot.event
 async def on_command_error(context: Context, error) -> None:
     """
-    Triggered upon failing to execute a command
+        Triggered upon failing to execute a command
+
+    :param context:
+    :param error:
+    :return:
     """
     if isinstance(error, utils.exceptions.UserBlacklisted):
         embed = discord.Embed(
@@ -149,7 +152,7 @@ async def on_command_error(context: Context, error) -> None:
 @tasks.loop(minutes=1.0)
 async def presenceCycle() -> None:
     """
-    Some magic using the discord rich presence
+        Some magic using the discord rich presence
     """
     statuses = ["with fire", "House Building Simulator", "with ur mom :P"]
 
@@ -158,7 +161,7 @@ async def presenceCycle() -> None:
 
 async def initDB() -> None:
     """
-    Loads the database I guess
+        Loads the database I guess
     """
     bot.log.info("Loading database")
 
@@ -172,12 +175,12 @@ async def initDB() -> None:
 
 async def loadCogs() -> None:
     """
-    Loads the commands in categories
+        Loads the commands in categories
     """
     bot.log.info("Trying to load cogs")
     try:
         # grab extensions
-        for f in os.listdir(f"{path}\\\\cogs"):
+        for f in os.listdir(f"{path}/cogs"):
             if f.endswith(".py"):
                 extension = f[:-3]
 
@@ -200,7 +203,7 @@ def main() -> None:
     asyncio.run(initDB())
     asyncio.run(loadCogs())
 
-    # Actually starting the bot, but we usin our own logger
+    # Actually starting the bot, but we using our own logger
     bot.run(config["token"], log_handler=None)
 
 

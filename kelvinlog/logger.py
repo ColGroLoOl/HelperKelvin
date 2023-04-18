@@ -5,16 +5,16 @@ from datetime import datetime
 from platform import system as getSystem
 
 
-class bcolors:
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKCYAN = '\033[96m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
+class bColors:
+    header = '\033[95m'
+    okBlue = '\033[94m'
+    okCyan = '\033[96m'
+    okGreen = '\033[92m'
+    warning = '\033[93m'
+    fail = '\033[91m'
+    end = '\033[0m'
+    bold = '\033[1m'
+    underline = '\033[4m'
 
 
 class getLogger:
@@ -35,7 +35,8 @@ class getLogger:
 
     def prepLogs(self):
         """
-        Check for the log folder and organize existing logs
+            Check for the log folder and organize existing logs
+
         :return:
         """
 
@@ -44,12 +45,13 @@ class getLogger:
         if not os.path.exists(self.logFolder):
             os.mkdir(self.logFolder)
 
-        self.logFile = open(f"{self.logFolder}\\latest.txt", "w+")
+        self.logFile = open(f"{self.logFolder}/latest.txt", "w+")
         self.logFile.flush()
 
     def postPrepLogs(self):
         """
-        Organize the logs upon finish or crashed process
+            Organize the logs upon finish or crashed process
+
         :return:
         """
         now = datetime.now()
@@ -57,37 +59,56 @@ class getLogger:
 
         self.logFile.close()
 
-        copyfile(f"{self.logFolder}\\latest.txt", f"{self.logFolder}\\log-{time}.txt")
+        copyfile(f"{self.logFolder}/latest.txt", f"{self.logFolder}/log-{time}.txt")
 
     def info(self, content: str) -> None:
+        """
+            Log given string in the console with fancy colors and save to a file
+
+        :param content:
+        :return:
+        """
         now = datetime.now()
         time = now.strftime("%d/%m %H:%M:%S.%f")
 
         print(
-            bcolors.OKBLUE + time,
-            bcolors.OKGREEN + f"[{self.name}\\{self.process}] [INFO]",
-            bcolors.OKCYAN + content,
-            bcolors.ENDC
+            bColors.okBlue + time,
+            bColors.okGreen + f"[{self.name}/{self.process}] [INFO]",
+            bColors.okCyan + content,
+            bColors.end
         )
 
-        self.logFile.write(f"{time} [{self.name}\\{self.process}] [INFO] {content}\n")
+        self.logFile.write(f"{time} [{self.name}/{self.process}] [INFO] {content}\n")
 
     def warn(self, content: str) -> None:
+        """
+            Same as info, but with different colors
+
+        :param content:
+        :return:
+        """
         now = datetime.now()
 
         print(
-            bcolors.OKBLUE + now.strftime("%d/%m %H:%M:%S.%f"),
-            bcolors.HEADER + f"[{self.name}\\{self.process}] [WARN]",
-            bcolors.WARNING + content,
-            bcolors.ENDC
+            bColors.okBlue + now.strftime("%d/%m %H:%M:%S.%f"),
+            bColors.header + f"[{self.name}/{self.process}] [WARN]",
+            bColors.warning + content,
+            bColors.end
         )
 
     def fail(self, content: str, exit: bool = True) -> None:
+        """
+            Same as warn, with the addition of the option to stop the running code
+
+        :param content:
+        :param exit:
+        :return:
+        """
         now = datetime.now()
 
         print(
-            bcolors.FAIL + bcolors.BOLD + now.strftime("%d/%m %H:%M:%S.%f"),
-            bcolors.FAIL + f"[{self.name}\\{self.process}] [WARN]",
-            bcolors.ENDC + bcolors.FAIL + content + ", exiting" if exit else ", ignored",
-            bcolors.ENDC
+            bColors.fail + bColors.bold + now.strftime("%d/%m %H:%M:%S.%f"),
+            bColors.fail + f"[{self.name}/{self.process}] [WARN]",
+            bColors.end + bColors.fail + content + ", exiting" if exit else ", ignored",
+            bColors.end
         )

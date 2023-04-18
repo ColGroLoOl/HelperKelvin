@@ -14,7 +14,7 @@ class Owner(commands.Cog, name="owner"):
 
     @commands.hybrid_command(
         name="shutdown",
-        description="Shutdown the bot"
+        description="[owner] Shutdown the bot"
     )
     @check.owner()
     async def shutdown(self, context: Context):
@@ -24,7 +24,7 @@ class Owner(commands.Cog, name="owner"):
 
     @commands.hybrid_command(
         name="load",
-        description="Load a cog"
+        description="[owner] Load a cog"
     )
     @app_commands.describe(cog="Cog to load")
     @check.owner()
@@ -51,7 +51,7 @@ class Owner(commands.Cog, name="owner"):
 
     @commands.hybrid_command(
         name="unload",
-        description="Unload a cog"
+        description="[owner] Unload a cog"
     )
     @app_commands.describe(cog="Cog to unload")
     @check.owner()
@@ -305,7 +305,7 @@ class Owner(commands.Cog, name="owner"):
 
     @commands.hybrid_command(
         name="uptime",
-        description="Show the bot uptime"
+        description="[owner] Show the bot uptime"
     )
     @check.owner()
     async def show_uptime(self, context: Context) -> None:
